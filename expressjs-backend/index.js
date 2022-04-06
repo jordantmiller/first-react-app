@@ -105,7 +105,7 @@ app.post('/users', (req, res) => {
     if (userToAdd['id'] === undefined)
         userToAdd['id'] = randomId(6);
     addUser(userToAdd);
-    res.status(201).end();
+    res.status(201).send(userToAdd);
 });
 
 function addUser(user){
@@ -115,7 +115,7 @@ function addUser(user){
 app.delete('/users', (req, res) => {
     const id = req.query.id;
     if(removeUserById(id))
-        res.status(200).end();
+        res.status(204).end();
     else
         res.status(404).send('Resource not found.');
 })
