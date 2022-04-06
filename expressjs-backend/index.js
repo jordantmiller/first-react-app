@@ -46,18 +46,39 @@ app.get('/', (req, res) => {
 
 app.get('/users', (req, res) => {
     const name = req.query.name;
-    if (name != undefined){
+    const id = req.query.id;
+    if (name != undefined && id != undefined) {
+        let result = findUserByNameId(name, id);
+        result = {users_list: result};
+        res.send(result);
+    }
+    else if (name != undefined && id === undefined){
         let result = findUserByName(name);
+        result = {users_list: result};
+        res.send(result);
+    }
+    else if (id != undefined) {
+        let result = findUserByQueryId(id);
         result = {users_list: result};
         res.send(result);
     }
     else{
         res.send(users);
     }
+
 });
 
 const findUserByName = (name) => { 
     return users['users_list'].filter( (user) => user['name'] === name); 
+}
+
+const findUserByQueryId = (id) => { 
+    return users['users_list'].filter( (user) => user['id'] === id); 
+}
+
+const findUserByNameId = (name, id) => {
+    return users['users_list'].filter( (user) => (user['name'] === name && 
+                                                 user['id'] === id));
 }
 
 app.get('/users/:id', (req, res) => {
@@ -84,6 +105,27 @@ app.post('/users', (req, res) => {
 
 function addUser(user){
     users['users_list'].push(user);
+}
+
+app.delete('/users', (req, res) => {
+    const id = req.query.id;
+    if(removeUserById(id))
+        res.status(200).end();
+    else
+        res.status(404).send('Resource not found.');
+})
+
+function removeUserById(id) {
+    var index = users.users_list.findIndex(function(item, i){
+        return item.id === id;
+    });
+
+    if (index !== -1) {
+        users.users_list.splice(index, 1);
+        return true;
+    }
+    else
+        return false;
 }
 
 app.listen(port, () => {
