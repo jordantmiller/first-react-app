@@ -76,9 +76,10 @@ const findUserByQueryId = (id) => {
     return users['users_list'].filter( (user) => user['id'] === id); 
 }
 
+// change && to || depending on professor's reply
 const findUserByNameId = (name, id) => {
     return users['users_list'].filter( (user) => (user['name'] === name && 
-                                                 user['id'] === id));
+                                                 user['id'] === id)); 
 }
 
 app.get('/users/:id', (req, res) => {
