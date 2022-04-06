@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 5000;
 
@@ -38,6 +39,7 @@ const users = {
     ]
  }
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -100,8 +102,10 @@ function findUserById(id) {
 
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
+    if (userToAdd['id'] === undefined)
+        userToAdd['id'] = randomId(6);
     addUser(userToAdd);
-    res.status(200).end();
+    res.status(201).end();
 });
 
 function addUser(user){
@@ -127,6 +131,16 @@ function removeUserById(id) {
     }
     else
         return false;
+}
+
+function randomId(length) {
+    var id = '';
+    for (var i = 0; i < length / 2; i++)
+        id += String.fromCharCode(97 + Math.floor(Math.random() * 26));
+    for (var i = length / 2; i < length; i++)
+        id += String.fromCharCode(48 + Math.floor(Math.random() * 10));
+
+    return id;
 }
 
 app.listen(port, () => {
